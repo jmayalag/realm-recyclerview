@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tonicartos.superslim.LayoutManager;
 
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -38,7 +40,7 @@ public class RealmRecyclerView extends FrameLayout {
     }
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
+    private FastScrollRecyclerView recyclerView;
     private ViewStub emptyContentContainer;
     private RealmBasedRecyclerViewAdapter adapter;
     private RealmSimpleItemTouchHelperCallback realmSimpleItemTouchHelperCallback;
@@ -78,7 +80,7 @@ public class RealmRecyclerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
-    
+
     public RealmRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int bufferItems) {
         super(context, attrs, defStyleAttr);
         if (bufferItems <= 0) bufferItems = 0;
@@ -101,7 +103,7 @@ public class RealmRecyclerView extends FrameLayout {
         initAttrs(context, attrs);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.rrv_swipe_refresh_layout);
-        recyclerView = (RecyclerView) findViewById(R.id.rrv_recycler_view);
+        recyclerView = (FastScrollRecyclerView) findViewById(R.id.rrv_recycler_view);
         emptyContentContainer = (ViewStub) findViewById(R.id.rrv_empty_content_container);
 
         swipeRefreshLayout.setEnabled(isRefreshable);
@@ -127,7 +129,7 @@ public class RealmRecyclerView extends FrameLayout {
                 if (gridSpanCount == -1 && gridWidthPx == -1) {
                     throw new IllegalStateException(
                             "For GridLayout, a span count or item width has to be set");
-                } else if(gridSpanCount != -1 && gridWidthPx != -1) {
+                } else if (gridSpanCount != -1 && gridWidthPx != -1) {
                     // This is awkward. Both values are set. Instead of picking one, throw an error.
                     throw new IllegalStateException(
                             "For GridLayout, a span count and item width can not both be set");
@@ -183,10 +185,10 @@ public class RealmRecyclerView extends FrameLayout {
      * Sets the orientation of the layout. {@link android.support.v7.widget.LinearLayoutManager}
      * will do its best to keep scroll position.
      *
-     * @param orientation {@link #HORIZONTAL} or {@link #VERTICAL}
+     * @param orientation LinearLayoutManager.HORIZONTAL or LinearLayoutManager.VERTICAL
      */
     public void setOrientation(int orientation) {
-        if(gridManager == null) {
+        if (gridManager == null) {
             throw new IllegalStateException("Error init of GridLayoutManager");
         }
         gridManager.setOrientation(orientation);
@@ -351,8 +353,8 @@ public class RealmRecyclerView extends FrameLayout {
     //
     // Expose public RecyclerView methods to the RealmRecyclerView
     //
-    
-    
+
+
     public void setItemViewCacheSize(int size) {
         recyclerView.setItemViewCacheSize(size);
     }
@@ -364,11 +366,11 @@ public class RealmRecyclerView extends FrameLayout {
     public void scrollToPosition(int position) {
         recyclerView.scrollToPosition(position);
     }
-    
+
     //
     // Expose public RecycleView
-    
-    public RecyclerView getRecycleView(){
+
+    public RecyclerView getRecycleView() {
         return recyclerView;
     }
 
@@ -387,13 +389,13 @@ public class RealmRecyclerView extends FrameLayout {
         isRefreshing = refreshing;
         swipeRefreshLayout.setRefreshing(refreshing);
     }
-    
+
     public void resetHasLoadMoreFired() {
         hasLoadMoreFired = false;
     }
 
     // Expose method to change the preloaded items
-    public void setBufferItems(int bufferItems){
+    public void setBufferItems(int bufferItems) {
         if (bufferItems <= 0) bufferItems = 0;
         this.bufferItems = bufferItems;
     }

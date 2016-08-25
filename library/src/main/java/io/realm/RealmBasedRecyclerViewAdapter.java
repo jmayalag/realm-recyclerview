@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tonicartos.superslim.GridSLM;
 import com.tonicartos.superslim.LinearSLM;
 
@@ -48,7 +49,7 @@ import io.realm.internal.TableOrView;
  */
 public abstract class RealmBasedRecyclerViewAdapter
         <T extends RealmModel, VH extends RealmViewHolder>
-        extends RecyclerView.Adapter<RealmViewHolder> {
+        extends RecyclerView.Adapter<RealmViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     public class RowWrapper {
 
