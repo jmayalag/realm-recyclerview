@@ -25,20 +25,6 @@ import io.realm.RealmBasedRecyclerViewAdapter;
  */
 public class RealmRecyclerView extends FrameLayout {
 
-    public interface OnRefreshListener {
-        void onRefresh();
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore(Object lastItem);
-    }
-
-    private enum Type {
-        LinearLayout,
-        Grid,
-        LinearLayoutWithHeaders
-    }
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private FastScrollRecyclerView recyclerView;
     private ViewStub emptyContentContainer;
@@ -46,7 +32,6 @@ public class RealmRecyclerView extends FrameLayout {
     private RealmSimpleItemTouchHelperCallback realmSimpleItemTouchHelperCallback;
     private boolean hasLoadMoreFired;
     private boolean showShowLoadMore;
-
     // Attributes
     private boolean isRefreshable;
     private int emptyViewId;
@@ -55,16 +40,23 @@ public class RealmRecyclerView extends FrameLayout {
     private int gridWidthPx;
     private boolean swipeToDelete;
     private int bufferItems = 3;
-
     private GridLayoutManager gridManager;
     private int lastMeasuredWidth = -1;
-
     // State
     private boolean isRefreshing;
-
     // Listener
     private OnRefreshListener onRefreshListener;
     private OnLoadMoreListener onLoadMoreListener;
+    private SwipeRefreshLayout.OnRefreshListener recyclerViewRefreshListener =
+            new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    if (!isRefreshing && onRefreshListener != null) {
+                        onRefreshListener.onRefresh();
+                    }
+                    isRefreshing = true;
+                }
+            };
 
     public RealmRecyclerView(Context context) {
         super(context);
@@ -350,11 +342,6 @@ public class RealmRecyclerView extends FrameLayout {
                 adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    //
-    // Expose public RecyclerView methods to the RealmRecyclerView
-    //
-
-
     public void setItemViewCacheSize(int size) {
         recyclerView.setItemViewCacheSize(size);
     }
@@ -363,24 +350,24 @@ public class RealmRecyclerView extends FrameLayout {
         recyclerView.smoothScrollToPosition(position);
     }
 
+    //
+    // Expose public RecyclerView methods to the RealmRecyclerView
+    //
+
     public void scrollToPosition(int position) {
         recyclerView.scrollToPosition(position);
     }
-
-    //
-    // Expose public RecycleView
 
     public RecyclerView getRecycleView() {
         return recyclerView;
     }
 
-    //
-    // Pull-to-refresh
-    //
-
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         this.onRefreshListener = onRefreshListener;
     }
+
+    //
+    // Expose public RecycleView
 
     public void setRefreshing(boolean refreshing) {
         if (!isRefreshable) {
@@ -389,6 +376,10 @@ public class RealmRecyclerView extends FrameLayout {
         isRefreshing = refreshing;
         swipeRefreshLayout.setRefreshing(refreshing);
     }
+
+    //
+    // Pull-to-refresh
+    //
 
     public void resetHasLoadMoreFired() {
         hasLoadMoreFired = false;
@@ -400,14 +391,17 @@ public class RealmRecyclerView extends FrameLayout {
         this.bufferItems = bufferItems;
     }
 
-    private SwipeRefreshLayout.OnRefreshListener recyclerViewRefreshListener =
-            new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    if (!isRefreshing && onRefreshListener != null) {
-                        onRefreshListener.onRefresh();
-                    }
-                    isRefreshing = true;
-                }
-            };
+    private enum Type {
+        LinearLayout,
+        Grid,
+        LinearLayoutWithHeaders
+    }
+
+    public interface OnRefreshListener {
+        void onRefresh();
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore(Object lastItem);
+    }
 }

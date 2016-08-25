@@ -51,55 +51,25 @@ public abstract class RealmBasedRecyclerViewAdapter
         <T extends RealmModel, VH extends RealmViewHolder>
         extends RecyclerView.Adapter<RealmViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    public class RowWrapper {
-
-        public final boolean isRealm;
-        public final int realmIndex;
-        public final int sectionHeaderIndex;
-        public final String header;
-
-        public RowWrapper(int realmIndex, int sectionHeaderIndex) {
-            this(true, realmIndex, sectionHeaderIndex, null);
-        }
-
-        public RowWrapper(int sectionHeaderIndex, String header) {
-            this(false, -1, sectionHeaderIndex, header);
-        }
-
-        public RowWrapper(boolean isRealm, int realmIndex, int sectionHeaderIndex, String header) {
-            this.isRealm = isRealm;
-            this.realmIndex = realmIndex;
-            this.sectionHeaderIndex = sectionHeaderIndex;
-            this.header = header;
-        }
-    }
-
     private static final List<Long> EMPTY_LIST = new ArrayList<>(0);
-
-    private Object loadMoreItem;
-    private Object footerItem;
-
     protected final int HEADER_VIEW_TYPE = 100;
     private final int LOAD_MORE_VIEW_TYPE = 101;
     private final int FOOTER_VIEW_TYPE = 102;
-
-    private Context context;
     protected LayoutInflater inflater;
     protected RealmResults<T> realmResults;
     protected List ids;
-
+    private Object loadMoreItem;
+    private Object footerItem;
+    private Context context;
     private List<RowWrapper> rowWrappers;
-
     private RealmChangeListener<RealmResults<T>> listener;
     private boolean animateResults;
     private boolean addSectionHeaders;
     private String headerColumnName;
-
     private long animatePrimaryColumnIndex;
     private RealmFieldType animatePrimaryIdType;
     private long animateExtraColumnIndex;
     private RealmFieldType animateExtraIdType;
-
     public RealmBasedRecyclerViewAdapter(
             Context context,
             RealmResults<T> realmResults,
@@ -616,5 +586,28 @@ public abstract class RealmBasedRecyclerViewAdapter
         realm.beginTransaction();
         realmResults.deleteFromRealm(position);
         realm.commitTransaction();
+    }
+
+    public class RowWrapper {
+
+        public final boolean isRealm;
+        public final int realmIndex;
+        public final int sectionHeaderIndex;
+        public final String header;
+
+        public RowWrapper(int realmIndex, int sectionHeaderIndex) {
+            this(true, realmIndex, sectionHeaderIndex, null);
+        }
+
+        public RowWrapper(int sectionHeaderIndex, String header) {
+            this(false, -1, sectionHeaderIndex, header);
+        }
+
+        public RowWrapper(boolean isRealm, int realmIndex, int sectionHeaderIndex, String header) {
+            this.isRealm = isRealm;
+            this.realmIndex = realmIndex;
+            this.sectionHeaderIndex = sectionHeaderIndex;
+            this.header = header;
+        }
     }
 }
