@@ -49,7 +49,7 @@ import io.realm.internal.TableOrView;
  */
 public abstract class RealmBasedRecyclerViewAdapter
         <T extends RealmModel, VH extends RealmViewHolder>
-        extends RecyclerView.Adapter<RealmViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
+        extends RecyclerView.Adapter<RealmViewHolder> {
 
     private static final List<Long> EMPTY_LIST = new ArrayList<>(0);
     protected final int HEADER_VIEW_TYPE = 100;
